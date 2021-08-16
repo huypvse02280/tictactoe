@@ -242,9 +242,11 @@
                   }
                   if(_this.checWinner()) {
                     alert("Chúc mừng Đội chơi "+ (_this.gameWin == 1 ? '〇' : '✖') + ' thắng cuộc 🙌🙌🙌🙌🙌🙌');
+                    _this.replay();
                     return;
                   }else if(!_this.checWinner() && _this.checkDoneAll()) {
-                    alert("Hai đội hòa nhau")
+                    alert("Hai đội hòa nhau");
+                    _this.replay();
                     return;
                   }
                   _this.currentPlayer = !_this.currentPlayer;
@@ -361,7 +363,7 @@
 
           },
           checkDoneAll() {
-            let countDone;
+            let countDone = 0;
             this.lstData.forEach(item => {
               if(item.status == 2) {
                 countDone ++;

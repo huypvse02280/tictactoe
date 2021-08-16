@@ -20,13 +20,13 @@
     <script type="text/javascript" defer src="scripts/alpine3.min.js"></script>
   </head>
   <body x-data="{lstDataNew:$persist([]).as('lstDataNew')}" >
-    <div @click="$refs.audio.play()" x-data="componentData" style="background-image:url('./images/sakura.jpg')" class="bg-cover bg-center bg-opacity-30 bg-indigo-100 h-screen mx-auto overflow-auto flex flex-col p-4 shadow relative">
+    <div @click="$refs.audio.play()" x-data="componentData" style="background-image:url('./images/sakura.jpg')" class="bg-cover bg-center bg-opacity-30 bg-indigo-100 h-screen mx-auto overflow-auto flex flex-col p-4 pt-0 shadow relative">
       <div class="flex flex-row flex-wrap space-x-4 space-y-4">
         <template x-for="(item, index) in lstDataRand" :key="index">
             <div draggable="true" :data-index="item.index" :data-from-index="index" class="item-drag cursor-pointer p-4 flex-auto items-center text-center text-back font-extrabold align-middle bg-yellow-400 rounded-xl text-3xl break-word shadow hover:bg-opacity-80 hover:bg-gray-800 hover:text-gray-300" x-text="(index+1)+'.'+item.word"></div>
         </template>
       </div>
-      <div class="grid grid-flow-row grid-cols-3 grid-rows-3 gap-4 transition duration-600 ease-in-out" style="margin-top: 50px;">
+      <div class="grid grid-flow-row grid-cols-3 grid-rows-3 gap-4 transition duration-600 ease-in-out" style="margin-top: 10px;">
           <template x-for="(item,index) in lstData" :key="index">
             <div 
               x-on:click="openWord(index)" 
@@ -65,7 +65,7 @@
         <button @click="$store.setting.isDialogOpen = true" class="border-2 border-green-500 bg-green-300 p-4 hover:bg-green-400 rounded-xl text-center text-4xl text-black">Tạo câu hỏi</button>
         <button @click="replay()" class="border-2 border-yellow-500 bg-yellow-300 p-4 hover:bg-yellow-400 rounded-xl text-center text-4xl text-black">Chơi lại</button>
       </div>
-      <div class="fixed bottom-0 right-0 w-40 flex m-2 p-2 bg-red-200 rounded-xl border-red-200"><p>Hosted by:</p><p class="font-bold"> Hoàn Vũ</p></div>
+      <div class="fixed bottom-0 right-0 w-40 flex m-2 p-2 bg-red-200 rounded-xl border-red-200"><p>Hosted by: </p><p class="font-bold pl-1"> Hoàn Vũ</p></div>
       <!--設定モーダル-->
       <div @keydown.escape.window="$store.setting.isDialogOpen = false" x-effect="loadGameType" x-data="{gameType:$persist('').as('gameType')}"> 
         <div
@@ -232,13 +232,20 @@
                     _this.lstData[targetIndex].status = 2;
                     _this.lstData[targetIndex] = {..._this.lstData[targetIndex], player:_this.currentPlayer?'〇':'✖'};
                     _this.currentPlayer ? _this.player1Score.push(targetIndex) : _this.player2Score.push(targetIndex);
-                    if(_this.checWinner()) {
+                    /*if(_this.checWinner()) {
                       alert("Chúc mừng Đội chơi "+ (_this.gameWin == 1 ? '〇' : '✖') + ' thắng cuộc 🙌🙌🙌🙌🙌🙌');
                       return;
                     }else if(!_this.checWinner() && _this.checkDoneAll()) {
                       alert("Hai đội hòa nhau")
                       return;
-                    }
+                    }*/
+                  }
+                  if(_this.checWinner()) {
+                    alert("Chúc mừng Đội chơi "+ (_this.gameWin == 1 ? '〇' : '✖') + ' thắng cuộc 🙌🙌🙌🙌🙌🙌');
+                    return;
+                  }else if(!_this.checWinner() && _this.checkDoneAll()) {
+                    alert("Hai đội hòa nhau")
+                    return;
                   }
                   _this.currentPlayer = !_this.currentPlayer;
                 });
@@ -317,7 +324,7 @@
           winnerPattern(){
             if(this.gameType == 9) {
               return [
-                [0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,7],[2,4,6]
+                [0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]
               ];
             }else if(this.gameType == 16) {
               return [
@@ -368,29 +375,28 @@
             this.player2Score.sort((a,b) => {return a-b;});
             this.gameType = this.lstDataNew.length ;
             let winnerPattern = this.winnerPattern();
-            if(this.player1Score.length > 0) {
-              for(let idx = 0; idx < winnerPattern.length;idx++) {
-                if(this.arrayEquals(winnerPattern[idx], this.player1Score)){
-                  this.gameWin = 1;
-                  return true;
-                }
+            for(let idx = 0; idx < winnerPattern.length;idx++) {
+              if(this.arrayEquals(winnerPattern[idx], this.player1Score)){
+                this.gameWin = 1;
+                return true;
               }
             }
-            if(this.player2Score.length > 0) {
-              for(let idx = 0; idx < winnerPattern.length;idx++) {
-                if(this.arrayEquals(winnerPattern[idx], this.player2Score)){
-                  this.gameWin = 2;
-                  return true;
-                }
+            for(let idx = 0; idx < winnerPattern.length;idx++) {
+              if(this.arrayEquals(winnerPattern[idx], this.player2Score)){
+                this.gameWin = 2;
+                return true;
               }
             }
             return false;
           },
           arrayEquals(a, b) {
+            console.log("pattern:"+a);
+            console.log("layer:"+b);
             return Array.isArray(a) &&
               Array.isArray(b) &&
-              a.length === b.length &&
-              a.every((val, index) => val === b[index]);
+              //a.length === b.length &&
+              a.every(v => b.includes(v));
+              //a.every((val, index) => val === b[index]);
           }
         }));
       });

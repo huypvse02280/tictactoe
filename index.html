@@ -32,7 +32,7 @@
               x-on:click="openWord(index)" 
               :data-index="index" 
               :data-status="lstData[index].status" 
-              x-text="(lstData[index].status == 1 || lstData[index].status == 3) ? index+'.'+lstData[index].mean :(lstData[index].status == 2 ? lstData[index]?.player : '')" 
+              x-text="(lstData[index].status == 1 || lstData[index].status == 3) ? (index+1)+'.'+lstData[index].mean :(lstData[index].status == 2 ? lstData[index]?.player : '')" 
               class="square cursor-pointer py-2 text-center text-white font-extrabold align-middle w-full rounded-xl text-4xl break-word shadow hover:bg-opacity-80 hover:bg-gray-800"
               :class="{'border-red-500 bg-red-400 border-2 border-dashed' : lstData[index].status === 3, 'item-default-bg': lstData[index].status <2, 'bg-red-100 text-red-600':lstData[index].status == 2 && lstData[index].player === '○', 'bg-green-100 text-green-600':lstData[index].status == 2 &&lstData[index].player === '✖'}" 
               style="min-height:6rem">

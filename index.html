@@ -154,6 +154,7 @@
             });
           },
           initEvent() {
+              let _this = this;
               //drag elements event 
               [].forEach.call(document.querySelectorAll('.item-drag'), function(el) {
                 el.addEventListener('dragstart', function(ev) {

@@ -23,7 +23,7 @@
     <div @click="$refs.audio.play()" x-data="componentData" style="background-image:url('./images/sakura.jpg')" class="bg-cover bg-center bg-opacity-30 bg-indigo-100 h-screen mx-auto overflow-auto flex flex-col p-4 shadow relative">
       <div class="flex flex-row flex-wrap space-x-4 space-y-4">
         <template x-for="(item, index) in lstDataRand" :key="index">
-            <div draggable="true" :data-index="item.index" :data-from-index="index" class="item-drag cursor-pointer p-4 flex-auto items-center text-center text-back font-extrabold align-middle bg-yellow-400 rounded-xl text-3xl break-word shadow hover:bg-opacity-80 hover:bg-gray-800 hover:text-gray-300" x-text="(index+1)'.'+item.word"></div>
+            <div draggable="true" :data-index="item.index" :data-from-index="index" class="item-drag cursor-pointer p-4 flex-auto items-center text-center text-back font-extrabold align-middle bg-yellow-400 rounded-xl text-3xl break-word shadow hover:bg-opacity-80 hover:bg-gray-800 hover:text-gray-300" x-text="(index+1)+'.'+item.word"></div>
         </template>
       </div>
       <div class="grid grid-flow-row grid-cols-3 grid-rows-3 gap-4 transition duration-600 ease-in-out" style="margin-top: 50px;">

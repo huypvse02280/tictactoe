@@ -34,8 +34,8 @@
               :data-status="lstData[index].status" 
               x-text="(lstData[index].status == 1 || lstData[index].status == 3) ? (index+1)+'.'+lstData[index].mean :(lstData[index].status == 2 ? lstData[index]?.player : '')" 
               class="square cursor-pointer py-2 text-center text-white font-extrabold align-middle w-full rounded-xl text-4xl break-word shadow hover:bg-opacity-80 hover:bg-gray-800"
-              :class="{'border-red-500 bg-red-400 border-2 border-dashed' : lstData[index].status === 3, 'item-default-bg': lstData[index].status <2, 'bg-red-100 text-red-600':lstData[index].status == 2 && lstData[index].player === '○', 'bg-green-100 text-green-600':lstData[index].status == 2 &&lstData[index].player === '✖'}" 
-              style="min-height:6rem">
+              :class="{'border-red-500 bg-red-400 border-2 border-dashed' : lstData[index].status === 3, 'item-default-bg': lstData[index].status <2, 'bg-red-100 text-red-600':lstData[index].status == 2 && lstData[index].player === '〇', 'bg-green-100 text-green-600':lstData[index].status == 2 &&lstData[index].player === '✖'}" 
+              style="min-height:6rem;line-height:4.5rem">
             </div>
           </template>
       </div>
@@ -65,7 +65,7 @@
         <button @click="$store.setting.isDialogOpen = true" class="border-2 border-green-500 bg-green-300 p-4 hover:bg-green-400 rounded-xl text-center text-4xl text-black">Tạo câu hỏi</button>
         <button @click="replay()" class="border-2 border-yellow-500 bg-yellow-300 p-4 hover:bg-yellow-400 rounded-xl text-center text-4xl text-black">Chơi lại</button>
       </div>
-      <div class="fixed bottom-0 right-0 w-40 flex m-2 p-2 bg-red-200 rounded-xl border-red-200"><p>Hosted by:</p><p class="font-bold">Hoàn vũ</p></div>
+      <div class="fixed bottom-0 right-0 w-40 flex m-2 p-2 bg-red-200 rounded-xl border-red-200"><p>Hosted by:</p><p class="font-bold">Hoàn Vũ</p></div>
       <!--設定モーダル-->
       <div @keydown.escape.window="$store.setting.isDialogOpen = false" x-effect="loadGameType" x-data="{gameType:$persist('').as('gameType')}"> 
         <div
@@ -230,10 +230,10 @@
                     console.log(_this.lstData);
                   }else if(ev.target.className.includes('square') && _this.lstData[targetIndex].word === _this.lstDataRand[fromIndex].word) {
                     _this.lstData[targetIndex].status = 2;
-                    _this.lstData[targetIndex] = {..._this.lstData[targetIndex], player:_this.currentPlayer?'○':'✖'};
+                    _this.lstData[targetIndex] = {..._this.lstData[targetIndex], player:_this.currentPlayer?'〇':'✖'};
                     _this.currentPlayer ? _this.player1Score.push(targetIndex) : _this.player2Score.push(targetIndex);
                     if(_this.checWinner()) {
-                      alert("Chúc mừng Đội chơi "+ (_this.gameWin == 1 ? '○' : '✖') + ' thắng cuộc 🙌🙌🙌🙌🙌🙌');
+                      alert("Chúc mừng Đội chơi "+ (_this.gameWin == 1 ? '〇' : '✖') + ' thắng cuộc 🙌🙌🙌🙌🙌🙌');
                       return;
                     }else if(!_this.checWinner() && _this.checkDoneAll()) {
                       alert("Hai đội hòa nhau")

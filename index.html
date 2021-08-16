@@ -23,7 +23,7 @@
     <div @click="$refs.audio.play()" x-data="componentData" style="background-image:url('./images/sakura.jpg')" class="bg-cover bg-center bg-opacity-30 bg-indigo-100 h-screen mx-auto overflow-auto flex flex-col p-4 shadow relative">
       <div class="flex flex-row flex-wrap space-x-4 space-y-4">
         <template x-for="(item, index) in lstDataRand" :key="index">
-            <div draggable="true" :data-index="item.index" :data-from-index="index" class="item-drag cursor-pointer p-4 flex-auto items-center text-center text-back font-extrabold align-middle bg-yellow-400 rounded-xl text-4xl break-word shadow hover:bg-opacity-80 hover:bg-gray-800 hover:text-gray-300" x-text="index+'.'+item.word"></div>
+            <div draggable="true" :data-index="item.index" :data-from-index="index" class="item-drag cursor-pointer p-4 flex-auto items-center text-center text-back font-extrabold align-middle bg-yellow-400 rounded-xl text-3xl break-word shadow hover:bg-opacity-80 hover:bg-gray-800 hover:text-gray-300" x-text="index+'.'+item.word"></div>
         </template>
       </div>
       <div class="grid grid-flow-row grid-cols-3 grid-rows-3 gap-4 transition duration-600 ease-in-out" style="margin-top: 50px;">
@@ -33,9 +33,9 @@
               :data-index="index" 
               :data-status="lstData[index].status" 
               x-text="(lstData[index].status == 1 || lstData[index].status == 3) ? index+'.'+lstData[index].mean :(lstData[index].status == 2 ? lstData[index]?.player : '')" 
-              class="square cursor-pointer py-4 text-center text-white font-extrabold align-middle w-full rounded-xl text-6xl break-word shadow hover:bg-opacity-80 hover:bg-gray-800"
+              class="square cursor-pointer py-2 text-center text-white font-extrabold align-middle w-full rounded-xl text-4xl break-word shadow hover:bg-opacity-80 hover:bg-gray-800"
               :class="{'border-red-500 bg-red-400 border-2 border-dashed' : lstData[index].status === 3, 'item-default-bg': lstData[index].status <2, 'bg-red-100 text-red-600':lstData[index].status == 2 && lstData[index].player === '○', 'bg-green-100 text-green-600':lstData[index].status == 2 &&lstData[index].player === '✖'}" 
-              style="min-height:8rem">
+              style="min-height:6rem">
             </div>
           </template>
       </div>
@@ -65,6 +65,7 @@
         <button @click="$store.setting.isDialogOpen = true" class="border-2 border-green-500 bg-green-300 p-4 hover:bg-green-400 rounded-xl text-center text-4xl text-black">Tạo câu hỏi</button>
         <button @click="replay()" class="border-2 border-yellow-500 bg-yellow-300 p-4 hover:bg-yellow-400 rounded-xl text-center text-4xl text-black">Chơi lại</button>
       </div>
+      <div class="fixed bottom-0 right-0 w-40 flex m-2 p-2 bg-red-200 rounded-xl border-red-200"><p>Hosted by:</p><p class="font-bold">Hoàn vũ</p></div>
       <!--設定モーダル-->
       <div @keydown.escape.window="$store.setting.isDialogOpen = false" x-effect="loadGameType" x-data="{gameType:$persist('').as('gameType')}"> 
         <div

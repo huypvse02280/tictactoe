@@ -1,7 +1,6 @@
 # Tic-Tac-Toe
 A tic-tac-toe game with drag and drop functionality. Made with Javascript, HTML & CSS.
 
-## [Play Demo](https://est271.github.io/tic-tac-toe/)
-
+## [Play Demo](https://huypvse02280.github.io/tictactoe/)
 ## Now available on mobile devices
 "# tictactoe" 

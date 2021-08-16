@@ -20,8 +20,8 @@
     <script type="text/javascript" defer src="scripts/alpine3.min.js"></script>
   </head>
   <body x-data="{lstDataNew:$persist([]).as('lstDataNew')}" >
-    <div x-data="componentData" class="bg-indigo-100 h-screen mx-auto overflow-auto flex flex-col p-4 shadow relative">
-      <div x-data="{gameType:$persist('').as('gameType')}" class="flex flex-row flex-wrap space-x-4 space-y-4">
+    <div @click="$refs.audio.play()" x-data="componentData" style="background-image:url('./images/sakura.jpg')" class="bg-cover bg-center bg-opacity-30 bg-indigo-100 h-screen mx-auto overflow-auto flex flex-col p-4 shadow relative">
+      <div class="flex flex-row flex-wrap space-x-4 space-y-4">
         <template x-for="(item, index) in lstDataRand" :key="index">
             <div draggable="true" :data-index="item.index" :data-from-index="index" class="item-drag cursor-pointer p-4 flex-auto items-center text-center text-back font-extrabold align-middle bg-yellow-400 rounded-xl text-4xl break-word shadow hover:bg-opacity-80 hover:bg-gray-800 hover:text-gray-300" x-text="index+'.'+item.word"></div>
         </template>
@@ -40,22 +40,33 @@
           </template>
       </div>
       <div class="mt-4">
-        <audio loop="true" autoplay="true" src="https://keenwilson.com/Word-Guess-Game/assets/audio/tropicalhouse.mp3" controls="controls"></audio>
+        <audio x-ref="audio" loop="true" autoplay src="https://keenwilson.com/Word-Guess-Game/assets/audio/tropicalhouse.mp3" controls="controls"></audio>
       </div>
       <div class="mt-4 mb-auto">
-        <div class="grid grid-flow-col grid-cols-3">
+        <div class="grid grid-flow-col gap-4 grid-cols-3 mb-4">
           <div class="text-center border-1 shadow border-gray-200 rounded bg-red-100 p-2">
-            <p class="text-4xl">Đội 〇</p>
+            <p class="text-4xl border-b-2 border-red-500 pb-2">Đội 〇</p>
+            <p class="text-2xl text-left">Trả lời đúng:<span x-text="player1Score.length"></span></p>
+            <template x-for="item,index in player1Score" :key="index">
+              <p class="text-2xl text-left" x-text="(index+1)+'.'+lstData[item].word+'→'+lstData[item].mean"></p>
+            </template>
           </div>
-          <div class="text-center text-4xl">Lượt chơi: <span x-text="currentPlayer ? 'Đội 〇' : 'Đội ✖'"></span></div>
-          <div class="text-center text-center border-1 shadow border-gray-200 rounded bg-green-100 p-2"><p class="text-4xl">Đội ✖</p></div>
+          <div class="text-center text-4xl bg-white rounded py-2">Lượt chơi: <span x-text="currentPlayer ? 'Đội 〇' : 'Đội ✖'"></span></div>
+          <div class="text-center text-center border-1 shadow border-gray-200 rounded bg-green-100 p-2">
+            <p class="text-4xl border-b-2 pb-2 border-green-500">Đội ✖</p>
+            <p class="text-2xl text-left">Trả lời đúng:<span x-text="player2Score.length"></span></p>
+            <template x-for="(item,index) in player2Score" :key="index">
+              <p class="text-2xl text-left" x-text="(index+1)+'.'+lstData[item].word+'→'+lstData[item].mean"></p>
+            </template>
+          </div>
         </div>
       </div>
       <div class="mx-auto">
         <button @click="$store.setting.isDialogOpen = true" class="border-2 border-green-500 bg-green-300 p-4 hover:bg-green-400 rounded-xl text-center text-4xl text-black">Tạo câu hỏi</button>
+        <button @click="replay()" class="border-2 border-yellow-500 bg-yellow-300 p-4 hover:bg-yellow-400 rounded-xl text-center text-4xl text-black">Chơi lại</button>
       </div>
       <!--設定モーダル-->
-      <div @keydown.escape.window="$store.setting.isDialogOpen = false">
+      <div @keydown.escape.window="$store.setting.isDialogOpen = false" x-effect="loadGameType" x-data="{gameType:$persist('').as('gameType')}"> 
         <div
             class="overflow-hidden h-screen"
             style="background-color: rgba(0,0,0,0.5)"
@@ -87,7 +98,7 @@
                     </div>
                     <div x-show="lstDataNew.length > 0" class="w-1/3 pt-3 md:mb-0">
                       <button @click="saveData" class="px-4 py-2 border shadow bg-blue-500 text-xl2 rounded-md font-bold mt-4">lưu</button>
-                      <button @click="resetData" class="px-4 py-2 border shadow bg-yellow-500 text-xl2 rounded-md font-bold mt-4 ml-4">đặt lại</button>
+                      <button class="px-4 py-2 border shadow bg-yellow-500 text-xl2 rounded-md font-bold mt-4 ml-4">đặt lại</button>
                     </div>
                   </div>
                     <div class="grid grid-flow-row grid-cols-2 gap-8 p-4 mb-2">
@@ -140,18 +151,16 @@
             this.initData();
             this.lstDataNew = JSON.parse(localStorage.getItem('lstDataNew'));
             this.gameType = localStorage.getItem('gameType');
-            this.$watch('gameType', value => {
-              if(value !== "") {
-                _this.gameType = value;
-                _this.lstDataNew = [];
-                for(let i=0;i<value;i++) {
-                  _this.lstDataNew.push({word:"", mean:"", status:0});
-                }
-              }
-            });
             this.$nextTick(() => {
               _this.initEvent();
             });
+          },
+          loadGameType(){
+            let gameType = parseInt(this.gameType);
+            this.lstDataNew = [];
+            for(let i=0;i<gameType;i++) {
+              this.lstDataNew.push({word:"", mean:"", status:0});
+            }
           },
           initEvent() {
               let _this = this;
@@ -221,13 +230,14 @@
                   }else if(ev.target.className.includes('square') && _this.lstData[targetIndex].word === _this.lstDataRand[fromIndex].word) {
                     _this.lstData[targetIndex].status = 2;
                     _this.lstData[targetIndex] = {..._this.lstData[targetIndex], player:_this.currentPlayer?'○':'✖'};
-                  }
-                  if (ev.target.className.includes('square') && _this.gameWin == 0 
-                    && _this.lstData[targetIndex].word === _this.lstDataRand[fromIndex].word){
-                    
-                    console.log("in");
-                     //check_win();
-                     //info_log(); 
+                    _this.currentPlayer ? _this.player1Score.push(targetIndex) : _this.player2Score.push(targetIndex);
+                    if(_this.checWinner()) {
+                      alert("Chúc mừng Đội chơi "+ (_this.gameWin == 1 ? '○' : '✖') + ' thắng cuộc 🙌🙌🙌🙌🙌🙌');
+                      return;
+                    }else if(!_this.checWinner() && _this.checkDoneAll()) {
+                      alert("Hai đội hòa nhau")
+                      return;
+                    }
                   }
                   _this.currentPlayer = !_this.currentPlayer;
                 });
@@ -267,23 +277,6 @@
                 }
             }
           },
-          info_log() {
-            let _this = this;
-            if (_this.unq_id === 0){
-                document.getElementById("results").innerHTML = game_log.pre;
-            }
-            else if (_this.unq_id === 9 && _this.gameWin === 0){
-                document.getElementById("results").innerHTML = game_log.no_win;
-            }
-            else if (_this.unq_id > 0 && _this.gameWin === 0){
-                if (dragged.id === 'first-x'){
-                    document.getElementById("results").innerHTML = game_log.start_x;
-                }
-                else if (dragged.id === 'first-o'){
-                    document.getElementById("results").innerHTML = game_log.start_o;
-                }
-            }
-          },
           openWord(index) {
             if(this.lstData[index].status == 0) {
               this.lstData[index].status = 1;
@@ -303,6 +296,7 @@
           initData(){
             let _this = this;
             let lstIndex = [];
+            _this.lstDataRand = [];
             for(let i=0;i<this.lstData.length;i++) {lstIndex.push(i);}
             lstIndex = this.shuffle(lstIndex);
             lstIndex.forEach(index => {
@@ -310,12 +304,19 @@
             });
             console.log(_this.lstDataRand);
           },
+          replay(){
+            this.shuffle(this.lstData);
+            for(let i=0;i<this.lstData.length;i++) {
+              this.lstData[i].status = 0;
+            }
+            this.initData();
+          },
           winnerPattern(){
-            if(this.gameType == "9") {
+            if(this.gameType == 9) {
               return [
-                [0,1,2],[3,4,5],[6,7,8],[0,4,7],[2,5,8],[3,6,9],[0,5,9],[3,5,7]
+                [0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,7],[2,4,6]
               ];
-            }else if(this.gameType == "16") {
+            }else if(this.gameType == 16) {
               return [
                 [0,1,2,3], [4,5,6,7], [8,9,10,11], [12,13,14,15],
                 [0,4,8,12], [1,5,9,13], [2,6,10,14], [3,7,11,15],
@@ -331,9 +332,62 @@
           },
           saveData(){
             console.log(this.lstDataNew);
+            let checkDataCount = 0;
+            this.lstDataNew.forEach(item => {
+              if(item.word === "" || item.mean === "") {
+                checkDataCount ++;
+              }
+            })
+            if(checkDataCount > 0) {
+              alert("Bạn vui lòng điền đủ số câu hỏi😂😂😂😂😂😂");
+              return;
+            }
+            if(confirm("Bạn có muốn lưu cẩu hỏi?"))　{
+              this.lstData = this.lstDataNew;
+              this.initData();
+            }
           },
           resetData(){
 
+          },
+          checkDoneAll() {
+            let countDone;
+            this.lstData.forEach(item => {
+              if(item.status == 2) {
+                countDone ++;
+              }
+            });
+            return countDone == this.lstData.length;
+          },
+          checWinner(){
+            let count = 0;
+            this.player1Score.sort((a,b) => {return a-b;});
+            this.player2Score.sort((a,b) => {return a-b;});
+            this.gameType = this.lstDataNew.length ;
+            let winnerPattern = this.winnerPattern();
+            if(this.player1Score.length > 0) {
+              for(let idx = 0; idx < winnerPattern.length;idx++) {
+                if(this.arrayEquals(winnerPattern[idx], this.player1Score)){
+                  this.gameWin = 1;
+                  return true;
+                }
+              }
+            }
+            if(this.player2Score.length > 0) {
+              for(let idx = 0; idx < winnerPattern.length;idx++) {
+                if(this.arrayEquals(winnerPattern[idx], this.player2Score)){
+                  this.gameWin = 2;
+                  return true;
+                }
+              }
+            }
+            return false;
+          },
+          arrayEquals(a, b) {
+            return Array.isArray(a) &&
+              Array.isArray(b) &&
+              a.length === b.length &&
+              a.every((val, index) => val === b[index]);
           }
         }));
       });

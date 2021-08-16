@@ -65,7 +65,7 @@
         <button @click="$store.setting.isDialogOpen = true" class="border-2 border-green-500 bg-green-300 p-4 hover:bg-green-400 rounded-xl text-center text-4xl text-black">Tạo câu hỏi</button>
         <button @click="replay()" class="border-2 border-yellow-500 bg-yellow-300 p-4 hover:bg-yellow-400 rounded-xl text-center text-4xl text-black">Chơi lại</button>
       </div>
-      <div class="fixed bottom-0 right-0 w-40 flex m-2 p-2 bg-red-200 rounded-xl border-red-200"><p>Hosted by:</p><p class="font-bold">Hoàn Vũ</p></div>
+      <div class="fixed bottom-0 right-0 w-40 flex m-2 p-2 bg-red-200 rounded-xl border-red-200"><p>Hosted by:</p><p class="font-bold"> Hoàn Vũ</p></div>
       <!--設定モーダル-->
       <div @keydown.escape.window="$store.setting.isDialogOpen = false" x-effect="loadGameType" x-data="{gameType:$persist('').as('gameType')}"> 
         <div
@@ -140,8 +140,8 @@
             {word:"簡単", mean:"かんたん", status:0},
             {word:"寂しい", mean:"さびしい", status:0},
             {word:"嬉しい", mean:"うれしい", status:0},
-            {word:"おこる", mean:"怒る", status:0},
-            {word:"いっしょけんめい", mean:"一緒懸命", status:0},
+            {word:"給料", mean:"きゅうりょう", status:0},
+            {word:"いっしょうけんめい", mean:"一緒懸命", status:0},
             {word:"うんてんしゅ", mean:"運転手", status:0},
             {word:"すてます", mean:"捨てます", status:0},
             {word:"よやくします", mean:"予約します", status:0},
